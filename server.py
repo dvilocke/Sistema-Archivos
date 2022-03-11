@@ -5,7 +5,6 @@ import os
 '''
 ARCHIVE
 1.when you fly open the pointer is placed at the beginning of the file.
-2.
 '''
 
 class Server:
@@ -18,21 +17,23 @@ class Server:
         self.socket.bind(url)
 
     def receive_file(self):
-        counter = 1
+        counter = 0
         while True:
-            with open('prueba.txt', 'wb') as f:
+            with open('prueba.jpg', 'wb') as f:
                 while not self.transfer_completed:
                     content = self.socket.recv_multipart()
                     if content[1].decode() == '0':
-                        print('ingresando', content[0])
                         f.write(content[0])
+                        print(f'part:{counter} entered to the server')
                         self.socket.send(b'ok')
+                        counter += 1
                     else:
                         self.transfer_completed = True
                         f.close()
 
             self.transfer_completed = False
-            self.socket.send(b'ok')
+            counter = 0
+            self.socket.send(b'file saved on server')
             exit()
 
 

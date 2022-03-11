@@ -6,7 +6,7 @@ import os
 
 class Cliente:
 
-    SIZE = 1
+    SIZE = 50
     context = zmq.Context()
     socket = context.socket(zmq.REQ)
 
@@ -20,13 +20,13 @@ class Cliente:
     def get_file_size(self) -> str:
         return f'{os.path.getsize(self.name_archive)} bytes'
 
-    def send_to_server(self):
+    def save_File(self):
         while True:
             with open(self.name_archive, 'rb') as f:
                 content = f.read(self.SIZE)
                 while content:
                     self.socket.send_multipart([content, '0'.encode()])
-                    print(self.socket.recv().decode())
+                    self.socket.recv().decode()
                     content = f.read(self.SIZE)
 
             self.socket.send_multipart([''.encode(), '1'.encode()])
@@ -34,6 +34,6 @@ class Cliente:
             break
 
 if __name__ == '__main__':
-    Cliente(url='tcp://localhost:5555', name_archive='cosa.txt').send_to_server()
+    Cliente(url='tcp://localhost:5555', name_archive='imagen/messi.jpg').save_File()
 
 
